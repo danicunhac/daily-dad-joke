@@ -2,6 +2,7 @@
   "name": "daily-dad-joke",
   "version": "0.1.0",
   "private": true,
+  "module": "esnext",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
@@ -17,6 +18,7 @@
     "eslint": "8.40.0",
     "eslint-config-next": "13.4.2",
     "next": "13.4.2",
+    "openai": "^3.2.1",
     "postcss": "8.4.23",
     "react": "18.2.0",
     "react-dom": "18.2.0",

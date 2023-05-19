@@ -1,8 +1,28 @@
 'use client';
 
 import { GithubLogo } from '@phosphor-icons/react';
+import { useEffect } from 'react';
 
 export default function Home() {
+  useEffect(() => {
+    (async () => {
+      const result = await fetch('https://api.openai.com/v1/completions', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
+        },
+        body: JSON.stringify({
+          model: 'gpt-3.5-turbo',
+          prompt: 'Tell a random dad joke',
+          max_tokens: 60,
+        }),
+      });
+
+      console.log('result', result);
+    })();
+  }, []);
+
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-24">
       <h2 className={`mb-3 text-4xl font-semibold text-red-700`}>
