@@ -1,36 +1,20 @@
-'use client';
+import Image from 'next/image';
+import { getTodaysJoke } from './api/supabase';
 
-import { GithubLogo } from '@phosphor-icons/react';
-import { useEffect } from 'react';
-
-export default function Home() {
-  useEffect(() => {
-    (async () => {
-      const result = await fetch('https://api.openai.com/v1/completions', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
-        },
-        body: JSON.stringify({
-          model: 'gpt-3.5-turbo',
-          prompt: 'Tell a random dad joke',
-          max_tokens: 60,
-        }),
-      });
-
-      console.log('result', result);
-    })();
-  }, []);
+export default async function Home() {
+  const joke = await getTodaysJoke();
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <h2 className={`mb-3 text-4xl font-semibold text-red-700`}>
-        The Daily Dad Joke
-      </h2>
-      <p className="italic">
-        {`"I'm thinking of reasons to go to Switzerland. The flag is a big plus." - Dad`}
-      </p>
+      <div className="flex flex-col items-center">
+        <h2 className={`mb-3 text-4xl font-semibold text-red-700`}>
+          The Daily Dad Joke
+        </h2>
+        <p className="opacity-50">
+          AI generated Dad joke, one joke a day, cause dads are funny, right?
+        </p>
+      </div>
+      <p className="italic">{`"${joke}" - Dad`}</p>
       <div className="mb-32 grid text-center lg:mb-0 lg:grid-cols-4 lg:text-left">
         <a
           href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
@@ -39,7 +23,12 @@ export default function Home() {
           rel="noopener noreferrer"
         >
           <h2 className={`flex mb-3 text-2xl font-semibold`}>
-            <GithubLogo />
+            <Image
+              src="/ri_github-fill.svg"
+              width={24}
+              height={24}
+              alt="Github Logo"
+            />
             <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
               -&gt;
             </span>
