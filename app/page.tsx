@@ -7,7 +7,7 @@ export default async function Home() {
   return (
     <main className="flex min-h-screen flex-col items-center py-12 px-24">
       <a
-        href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
+        href="https://github.com/danicunhac/daily-dad-joke"
         className="group rounded-lg border border-transparent px-5 py-4 transition-colors self-end"
         target="_blank"
         rel="noopener noreferrer"
