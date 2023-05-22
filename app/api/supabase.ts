@@ -6,7 +6,7 @@ const supabase = createClient(
   process.env.SUPABASE_KEY as string
 );
 
-export async function getTodaysJoke() {
+export async function getTodaysJoke(): Promise<string> {
   // Check if we have a joke for today
   const currentDate = new Date().toISOString().split('T')[0];
 
