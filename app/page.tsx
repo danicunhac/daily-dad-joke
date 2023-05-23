@@ -1,4 +1,4 @@
-'use client';
+export const revalidate = 60; // 1 hour
 
 import Image from 'next/image';
 import { getTodaysJoke } from './api/supabase';
