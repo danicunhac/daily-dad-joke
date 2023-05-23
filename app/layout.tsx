@@ -18,7 +18,10 @@ export default function RootLayout({
       <head>
         <meta charSet="utf-8" />
         <title>The Daily Dad Joke</title>
-        <meta name="description" content={metadata.description} />
+        <meta
+          name="description"
+          content="AI generated Dad joke, one joke a day, cause dads are funny, right?"
+        />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </head>
