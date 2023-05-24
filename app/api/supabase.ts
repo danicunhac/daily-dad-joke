@@ -63,3 +63,12 @@ async function insertJoke(joke: string, created_at: string) {
     },
   ]);
 }
+
+export async function getJokes(currentJoke: string) {
+  const { data } = await supabase
+    .from('jokes')
+    .select()
+    .neq('joke', currentJoke);
+
+  return data;
+}

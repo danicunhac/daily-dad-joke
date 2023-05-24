@@ -1,10 +1,11 @@
 export const revalidate = 60; // 1 hour
 
 import Image from 'next/image';
-import { getTodaysJoke } from './api/supabase';
+import { getJokes, getTodaysJoke } from './api/supabase';
 
 export default async function Home() {
   const joke = await getTodaysJoke();
+  const allJokes = await getJokes(joke);
 
   return (
     <main className="flex min-h-screen flex-col items-center py-12 px-24">
@@ -35,6 +36,33 @@ export default async function Home() {
         </p>
         <p className="italic mt-24">{`"${joke.trim()}" - Dad`}</p>
       </div>
+      {allJokes ? (
+        <ol className="relative border-l border-gray-200 dark:border-gray-700 self-end mt-24">
+          {allJokes.reverse().map(({ id, created_at, joke }, index) => (
+            <li
+              key={id}
+              className={`mb-10 ml-4 ${index === 0 ? 'mt-12' : 'mt-16'}`}
+            >
+              <div className="absolute w-3 h-3 bg-white rounded-full mt-4 -left-1.5 border border-black"></div>
+              <time className="mb-1 text-xs font-normal leading-none text-gray-500">
+                {new Date(created_at).toDateString()}
+              </time>
+              <p className="mb-4 text-xs font-normal text-gray-700">
+                {joke.trim()}
+              </p>
+              {/* <a
+                href="#"
+                className="inline-flex items-center px-4 py-2 text-xs font-medium text-gray-900 bg-white border border-gray-200 rounded-lg hover:bg-gray-100 hover:text-red-700 focus:z-10 hover:ring-1 focus:outline-none hover:ring-red-700 focus:text-red-700"
+              >
+                Share{' '}
+                <span className="ml-1 inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
+                  -&gt;
+                </span>
+              </a> */}
+            </li>
+          ))}
+        </ol>
+      ) : null}
     </main>
   );
 }
