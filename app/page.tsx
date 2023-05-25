@@ -1,4 +1,5 @@
 export const revalidate = 60; // 1 hour
+import { FaTwitter, FaFacebook, FaLinkedin } from "react-icons/fa";
 
 import Image from 'next/image';
 import { getJokes, getTodaysJoke } from './api/supabase';
@@ -41,7 +42,7 @@ export default async function Home() {
           {allJokes.reverse().map(({ id, created_at, joke }, index) => (
             <li
               key={id}
-              className={`mb-10 ml-4 ${index === 0 ? 'mt-12' : 'mt-16'}`}
+              className={`mb-10 ml-4 ${index === 0 ? "mt-12" : "mt-16"}`}
             >
               <div className="absolute w-3 h-3 bg-white rounded-full mt-4 -left-1.5 border border-black"></div>
               <time className="mb-1 text-xs font-normal leading-none text-gray-500">
@@ -59,6 +60,39 @@ export default async function Home() {
                   -&gt;
                 </span>
               </a> */}
+              <a
+                href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(
+                  joke.trim()
+                )}`}
+                className="inline-flex items-center px-4 py-2 text-xs font-medium text-gray-900 bg-white border border-gray-200 rounded-lg hover:bg-gray-100 hover:text-red-700 focus:z-10 hover:ring-1 focus:outline-none hover:ring-red-700 focus:text-red-700"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Share on Twitter
+                <FaTwitter className="ml-1" />
+              </a>
+              <a
+                href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(
+                  window.location.href
+                )}`}
+                className="inline-flex items-center px-4 py-2 text-xs font-medium text-gray-900 bg-white border border-gray-200 rounded-lg hover:bg-gray-100 hover:text-red-700 focus:z-10 hover:ring-1 focus:outline-none hover:ring-red-700 focus:text-red-700"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Share on Facebook
+                <FaFacebook className="ml-1" />
+              </a>
+              <a
+                href={`https://www.linkedin.com/shareArticle?mini=true&url=${encodeURIComponent(
+                  window.location.href
+                )}&title=${encodeURIComponent(joke.trim())}`}
+                className="inline-flex items-center px-4 py-2 text-xs font-medium text-gray-900 bg-white border border-gray-200 rounded-lg hover:bg-gray-100 hover:text-red-700 focus:z-10 hover:ring-1 focus:outline-none hover:ring-red-700 focus:text-red-700"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Share on LinkedIn
+                <FaLinkedin className="ml-1" />
+              </a>
             </li>
           ))}
         </ol>
