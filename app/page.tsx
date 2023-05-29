@@ -1,12 +1,12 @@
-export const revalidate = 60; // 1 hour
 import { FaTwitter, FaFacebook, FaLinkedin } from "react-icons/fa";
-
-import Image from 'next/image';
-import { getJokes, getTodaysJoke } from './api/supabase';
+import Image from "next/image";
+import { getJokes, getTodaysJoke } from "./api/supabase";
 
 export default async function Home() {
   const joke = await getTodaysJoke();
   const allJokes = await getJokes(joke);
+
+  const isBrowser = typeof window !== "undefined"; // Check if running in the browser
 
   return (
     <main className="flex min-h-screen flex-col items-center py-12 px-24">
@@ -51,48 +51,44 @@ export default async function Home() {
               <p className="mb-4 text-xs font-normal text-gray-700">
                 {joke.trim()}
               </p>
-              {/* <a
-                href="#"
-                className="inline-flex items-center px-4 py-2 text-xs font-medium text-gray-900 bg-white border border-gray-200 rounded-lg hover:bg-gray-100 hover:text-red-700 focus:z-10 hover:ring-1 focus:outline-none hover:ring-red-700 focus:text-red-700"
-              >
-                Share{' '}
-                <span className="ml-1 inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-                  -&gt;
-                </span>
-              </a> */}
-              <a
-                href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(
-                  joke.trim()
-                )}`}
-                className="inline-flex items-center px-4 py-2 text-xs font-medium text-gray-900 bg-white border border-gray-200 rounded-lg hover:bg-gray-100 hover:text-red-700 focus:z-10 hover:ring-1 focus:outline-none hover:ring-red-700 focus:text-red-700"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                Share on Twitter
-                <FaTwitter className="ml-1" />
-              </a>
-              <a
-                href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(
-                  window.location.href
-                )}`}
-                className="inline-flex items-center px-4 py-2 text-xs font-medium text-gray-900 bg-white border border-gray-200 rounded-lg hover:bg-gray-100 hover:text-red-700 focus:z-10 hover:ring-1 focus:outline-none hover:ring-red-700 focus:text-red-700"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                Share on Facebook
-                <FaFacebook className="ml-1" />
-              </a>
-              <a
-                href={`https://www.linkedin.com/shareArticle?mini=true&url=${encodeURIComponent(
-                  window.location.href
-                )}&title=${encodeURIComponent(joke.trim())}`}
-                className="inline-flex items-center px-4 py-2 text-xs font-medium text-gray-900 bg-white border border-gray-200 rounded-lg hover:bg-gray-100 hover:text-red-700 focus:z-10 hover:ring-1 focus:outline-none hover:ring-red-700 focus:text-red-700"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                Share on LinkedIn
-                <FaLinkedin className="ml-1" />
-              </a>
+              {/* Share links */}
+              {isBrowser && (
+                <>
+                  <a
+                    href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(
+                      joke.trim()
+                    )}`}
+                    className="inline-flex items-center px-4 py-2 text-xs font-medium text-gray-900 bg-white border border-gray-200 rounded-lg hover:bg-gray-100 hover:text-red-700 focus:z-10 hover:ring-1 focus:outline-none hover:ring-red-700 focus:text-red-700"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    Share on Twitter
+                    <FaTwitter className="ml-1" />
+                  </a>
+                  <a
+                    href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(
+                      isBrowser ? window.location.href : ""
+                    )}`}
+                    className="inline-flex items-center px-4 py-2 text-xs font-medium text-gray-900 bg-white border border-gray-200 rounded-lg hover:bg-gray-100 hover:text-red-700 focus:z-10 hover:ring-1 focus:outline-none hover:ring-red-700 focus:text-red-700"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    Share on Facebook
+                    <FaFacebook className="ml-1" />
+                  </a>
+                  <a
+                    href={`https://www.linkedin.com/shareArticle?mini=true&url=${encodeURIComponent(
+                      isBrowser ? window.location.href : ""
+                    )}&title=${encodeURIComponent(joke.trim())}`}
+                    className="inline-flex items-center px-4 py-2 text-xs font-medium text-gray-900 bg-white border border-gray-200 rounded-lg hover:bg-gray-100 hover:text-red-700 focus:z-10 hover:ring-1 focus:outline-none hover:ring-red-700 focus:text-red-700"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    Share on LinkedIn
+                    <FaLinkedin className="ml-1" />
+                  </a>
+                </>
+              )}
             </li>
           ))}
         </ol>
