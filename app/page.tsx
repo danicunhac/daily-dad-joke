@@ -7,7 +7,7 @@ export default async function Home() {
   const joke = await getTodaysJoke();
   const allJokes = await getJokes(joke);
 
-  const shareMessage = joke + '\n\n - Shared from The Daily Dad Joke';
+  const shareMessage = joke.trim() + '\n\n - Shared from The Daily Dad Joke';
 
   return (
     <main className="flex min-h-screen flex-col items-center py-12 px-24">
