@@ -8,7 +8,6 @@ The Daily Dad Joke is a web application built with Next.js that provides users w
 
 - **Archive**: The application maintains an archive of previously displayed dad jokes, allowing users to browse through the collection and revisit their favorite jokes whenever they want.
 
-### TODO:
 - **Sharing**: Users can easily share the dad jokes with their friends and family through social media platforms or messaging apps. This feature allows for spreading the laughter and increasing the reach of the project.
 
 ### TODO:
