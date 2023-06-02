@@ -1,3 +1,5 @@
+export const revalidate = 60; // 1 hour
+
 import Image from 'next/image';
 import { FaTwitter, FaFacebook, FaLinkedin } from 'react-icons/fa';
 
