@@ -18,8 +18,8 @@ export default async function Home() {
   const shareMessage = joke.trim() + '\n\n - Shared from The Daily Dad Joke';
 
   return (
-    <main className="flex min-h-screen flex-col items-center px-24">
-      <header className="flex w-full items-center justify-between py-4 px-8 bg-blue-background text-white font-light border-b border-black">
+    <main className="flex min-h-screen flex-col items-center">
+      <header className="flex w-full items-center justify-between py-4 px-16 bg-blue-background text-white font-light border-b border-black">
         <h1 className="flex items-center gap-4">
           <Image
             src="/favicon.ico"
@@ -66,13 +66,20 @@ export default async function Home() {
           </a>
         </div>
       </header>
-      <section className="flex w-full items-center py-28 bg-blue-background text-white">
-        <div className="flex flex-col">
-          <h2 className={`mb-3 text-4xl font-semibold`}>
+      <section className="flex w-full items-center py-24 px-16 bg-blue-background text-white">
+        <div className="flex flex-col max-w-1/2">
+          <h2 className={`mb-6 text-7xl font-serif`}>
             AI Generated Dad Jokes.{' '}
           </h2>
-          <p className="opacity-50">Cause dads are funny, right? </p>
-          <p className="italic mt-24">{`"${joke.trim()}" - Dad`}</p>
+          <p className="text-4xl font-light mb-12">
+            Cause dads are funny, right?
+          </p>
+          <button className="w-fit py-2 px-10 bg-white rounded-3xl text-black border border-black">
+            Make me laugh
+          </button>
+        </div>
+        <div>
+          <p className="italic">{`${joke.trim()}`}</p>
         </div>
       </section>
       {allJokes ? (

@@ -12,6 +12,9 @@ module.exports = {
         'blue-foreground': '#C0E0DE',
         'gray-foreground-light': '#8D818D',
       },
+      maxWidth: {
+        500: '500px',
+      },
     },
   },
   plugins: [],
