@@ -31,6 +31,7 @@ export default async function Home() {
         </h1>
         <div className="flex items-center gap-16">
           <a
+            className="hover:text-slate-300"
             href="https://github.com/danicunhac/daily-dad-joke"
             target="_blank"
             rel="noopener noreferrer"
@@ -38,6 +39,7 @@ export default async function Home() {
             Jokes
           </a>
           <a
+            className="hover:text-slate-300"
             href="https://github.com/danicunhac/daily-dad-joke"
             target="_blank"
             rel="noopener noreferrer"
@@ -45,6 +47,7 @@ export default async function Home() {
             Contact
           </a>
           <a
+            className="hover:text-slate-300"
             href="https://github.com/danicunhac/daily-dad-joke"
             target="_blank"
             rel="noopener noreferrer"
