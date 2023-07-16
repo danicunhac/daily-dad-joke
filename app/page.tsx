@@ -105,7 +105,7 @@ export default async function Home() {
           </a>
         </div>
       </header>
-      <section className="flex w-full max-w-1920 items-center py-24 px-16 bg-blue-background text-white gap-24 bg-[url('/dad-emoji.svg')] bg-no-repeat bg-[right_bottom_-5rem] border-b border-black">
+      <section className="flex w-full max-w-1920 py-24 px-16 bg-blue-background text-white gap-24 bg-[url('/dad-emoji.svg')] bg-no-repeat bg-[right_bottom_-5rem] border-b border-black">
         <div className="flex flex-1 flex-col max-w-500">
           <h2 className={`mb-6 text-7xl font-serif`}>
             AI Generated Dad Jokes.{' '}
@@ -117,7 +117,7 @@ export default async function Home() {
             Make me laugh
           </button> */}
         </div>
-        <div className="flex flex-1 flex-col justify-center gap-8 max-w-850">
+        <div className="flex flex-1 flex-col py-4 gap-8 max-w-850">
           <p className="text-3xl font-semibold">{`${joke?.question}`}</p>
           <p className="italic text-3xl font-normal">
             {`${joke?.answer}`} <span className="text-slate-400">- Dad</span>
