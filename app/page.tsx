@@ -8,10 +8,15 @@ import {
 import Image from 'next/image';
 import { headers } from 'next/headers';
 
-export default async function Home() {
-  // const shareMessage =
-  //   JSON.stringify(todaysJoke) + '\n\n - Shared from The Daily Dad Joke';
+type JokeObject = {
+  id: string;
+  created_at: string;
+  joke: string;
+};
 
+const weekday = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+
+export default async function Home() {
   const host = headers().get('host');
   const protocol = process?.env.NODE_ENV === 'development' ? 'http' : 'https';
 
@@ -19,12 +24,34 @@ export default async function Home() {
     method: 'GET',
   }).then((res) => res.json());
 
-  const jokes = await fetch(`${protocol}://${host}/api/supabase/jokes`, {
+  const jokes = (await fetch(`${protocol}://${host}/api/supabase/jokes`, {
     method: 'GET',
     headers: {
       joke: JSON.stringify(joke),
     },
-  }).then((res) => res.json());
+  }).then((res) => res.json())) as JokeObject[];
+
+  const mappedJokes = jokes.map((joke) => {
+    const date = new Date(joke.created_at);
+
+    const created_at = `${weekday[date.getDay()]} · ${date.toLocaleDateString(
+      'en-US',
+      {
+        month: 'short',
+        day: 'numeric',
+        year: 'numeric',
+      }
+    )}`;
+
+    return {
+      id: joke.id,
+      created_at,
+      joke: JSON.parse(joke.joke),
+    };
+  });
+
+  const shareMessage =
+    `${joke.question} ${joke.answer}` + '\n\n - Shared from The Daily Dad Joke';
 
   return (
     <main className="flex min-h-screen flex-col items-center">
@@ -78,75 +105,51 @@ export default async function Home() {
           </a>
         </div>
       </header>
-      <section className="flex w-full items-center py-24 px-16 bg-blue-background text-white justify-between">
+      <section className="flex w-full max-w-1920 items-center py-24 px-16 bg-blue-background text-white gap-24 bg-[url('/dad-emoji.svg')] bg-no-repeat bg-[right_bottom_-5rem] border-b border-black">
         <div className="flex flex-1 flex-col max-w-500">
           <h2 className={`mb-6 text-7xl font-serif`}>
             AI Generated Dad Jokes.{' '}
           </h2>
-          <p className="text-4xl font-light mb-12">
+          <p className="text-3xl font-light mb-12">
             Cause dads are funny, right?
           </p>
-          <button className="w-fit py-2 px-10 bg-white rounded-3xl text-black border border-black">
+          {/* <button className="w-fit py-2 px-10 bg-white rounded-3xl text-black border border-black">
             Make me laugh
-          </button>
+          </button> */}
         </div>
-        <div className="flex flex-1 flex-col place-items-center gap-8 text-3xl">
-          <p className="italic">{`${joke?.question}`}</p>
-          <p className="italic">{`${joke?.answer}`}</p>
+        <div className="flex flex-1 flex-col justify-center gap-8 max-w-850">
+          <p className="text-3xl font-semibold">{`${joke?.question}`}</p>
+          <p className="italic text-3xl font-normal">
+            {`${joke?.answer}`} <span className="text-slate-400">- Dad</span>
+          </p>
         </div>
       </section>
-      {/* {allJokes ? (
-        <ol className="relative border-l border-gray-200 dark:border-gray-700 self-end mt-24">
-          {allJokes.map(({ id, created_at, joke }, index) => (
-            <li
-              key={id}
-              className={`mb-10 ml-4 ${index === 0 ? 'mt-12' : 'mt-16'}`}
-            >
-              <div className="absolute w-3 h-3 bg-white rounded-full mt-4 -left-1.5 border border-black"></div>
-              <time className="mb-1 text-xs font-normal leading-none text-gray-500">
-                {new Date(created_at).toDateString()}
-              </time>
-              <p className="mb-4 text-xs font-normal text-gray-700">{joke}</p>
-              Share links
-              <div className="flex gap-2">
-                <a
-                  href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(
-                    shareMessage
-                  )}`}
-                  className="inline-flex items-center px-4 py-2 text-xs font-medium text-gray-900 bg-white border border-gray-200 rounded-lg hover:bg-gray-100 hover:text-red-700 focus:z-10 hover:ring-1 focus:outline-none hover:ring-red-700 focus:text-red-700"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  Share on Twitter
-                  <FaTwitter className="ml-1" />
-                </a>
-                <a
-                  href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(
-                    'https://daily-dad-joke.vercel.app/'
-                  )}`}
-                  className="inline-flex items-center px-4 py-2 text-xs font-medium text-gray-900 bg-white border border-gray-200 rounded-lg hover:bg-gray-100 hover:text-red-700 focus:z-10 hover:ring-1 focus:outline-none hover:ring-red-700 focus:text-red-700"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  Share on Facebook
-                  <FaFacebook className="ml-1" />
-                </a>
-                <a
-                  href={`https://www.linkedin.com/shareArticle?mini=true&url=${encodeURIComponent(
-                    'https://daily-dad-joke.vercel.app/'
-                  )}&title=${encodeURIComponent(shareMessage)}`}
-                  className="inline-flex items-center px-4 py-2 text-xs font-medium text-gray-900 bg-white border border-gray-200 rounded-lg hover:bg-gray-100 hover:text-red-700 focus:z-10 hover:ring-1 focus:outline-none hover:ring-red-700 focus:text-red-700"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  Share on LinkedIn
-                  <FaLinkedin className="ml-1" />
-                </a>
-              </div>
-            </li>
-          ))}
-        </ol>
-      ) : null} */}
+      <section className="py-20 px-16 flex-1 w-full">
+        {jokes ? (
+          <ol className="grid gap-24 grid-cols-3">
+            {mappedJokes.map(({ id, created_at, joke }, index) => {
+              return (
+                <li className="flex gap-6" key={id}>
+                  <span className="text-3xl	text-teal-500/50 font-bold">
+                    {(index + 1).toString().padStart(2, '0')}
+                  </span>
+                  <div>
+                    <div className="flex flex-1 flex-col justify-center max-w-850 gap-2">
+                      <p className="text-black font-semibold">{`${joke.question}`}</p>
+                      <p className="text-black/75 font-normal">
+                        {`${joke.answer}`}{' '}
+                      </p>
+                      <time className="text-sm font-normal leading-none text-gray-500">
+                        {created_at}
+                      </time>
+                    </div>
+                  </div>
+                </li>
+              );
+            })}
+          </ol>
+        ) : null}
+      </section>
     </main>
   );
 }
