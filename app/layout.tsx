@@ -20,7 +20,7 @@ export default function RootLayout({
         <title>The Daily Dad Joke</title>
         <meta
           name="description"
-          content="AI generated Dad joke, one joke a day, cause dads are funny, right?"
+          content="AI generated dad jokes. Cause dads are funny, right?"
         />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
