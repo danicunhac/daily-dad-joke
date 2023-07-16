@@ -1,3 +1,5 @@
+export const revalidate = 1;
+
 import { FaGithub, FaArrowRight } from 'react-icons/fa';
 import Image from 'next/image';
 import { headers } from 'next/headers';
