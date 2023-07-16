@@ -1,5 +1,3 @@
-export const revalidate = 60; // 1 hour
-
 import {
   FaTwitter,
   FaFacebook,
@@ -7,15 +5,26 @@ import {
   FaGithub,
   FaArrowRight,
 } from 'react-icons/fa';
-
-import { getJokes, getTodaysJoke } from './api/supabase';
 import Image from 'next/image';
+import { headers } from 'next/headers';
 
 export default async function Home() {
-  const joke = await getTodaysJoke();
-  const allJokes = await getJokes(joke);
+  // const shareMessage =
+  //   JSON.stringify(todaysJoke) + '\n\n - Shared from The Daily Dad Joke';
 
-  const shareMessage = joke.trim() + '\n\n - Shared from The Daily Dad Joke';
+  const host = headers().get('host');
+  const protocol = process?.env.NODE_ENV === 'development' ? 'http' : 'https';
+
+  const joke = await fetch(`${protocol}://${host}/api/supabase/joke`, {
+    method: 'GET',
+  }).then((res) => res.json());
+
+  const jokes = await fetch(`${protocol}://${host}/api/supabase/jokes`, {
+    method: 'GET',
+    headers: {
+      joke: JSON.stringify(joke),
+    },
+  }).then((res) => res.json());
 
   return (
     <main className="flex min-h-screen flex-col items-center">
@@ -69,8 +78,8 @@ export default async function Home() {
           </a>
         </div>
       </header>
-      <section className="flex w-full items-center py-24 px-16 bg-blue-background text-white">
-        <div className="flex flex-col max-w-1/2">
+      <section className="flex w-full items-center py-24 px-16 bg-blue-background text-white justify-between">
+        <div className="flex flex-1 flex-col max-w-500">
           <h2 className={`mb-6 text-7xl font-serif`}>
             AI Generated Dad Jokes.{' '}
           </h2>
@@ -81,13 +90,14 @@ export default async function Home() {
             Make me laugh
           </button>
         </div>
-        <div>
-          <p className="italic">{`${joke.trim()}`}</p>
+        <div className="flex flex-1 flex-col place-items-center gap-8 text-3xl">
+          <p className="italic">{`${joke?.question}`}</p>
+          <p className="italic">{`${joke?.answer}`}</p>
         </div>
       </section>
-      {allJokes ? (
+      {/* {allJokes ? (
         <ol className="relative border-l border-gray-200 dark:border-gray-700 self-end mt-24">
-          {allJokes.reverse().map(({ id, created_at, joke }, index) => (
+          {allJokes.map(({ id, created_at, joke }, index) => (
             <li
               key={id}
               className={`mb-10 ml-4 ${index === 0 ? 'mt-12' : 'mt-16'}`}
@@ -96,10 +106,8 @@ export default async function Home() {
               <time className="mb-1 text-xs font-normal leading-none text-gray-500">
                 {new Date(created_at).toDateString()}
               </time>
-              <p className="mb-4 text-xs font-normal text-gray-700">
-                {joke.trim()}
-              </p>
-              {/* Share links */}
+              <p className="mb-4 text-xs font-normal text-gray-700">{joke}</p>
+              Share links
               <div className="flex gap-2">
                 <a
                   href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(
@@ -138,7 +146,7 @@ export default async function Home() {
             </li>
           ))}
         </ol>
-      ) : null}
+      ) : null} */}
     </main>
   );
 }
