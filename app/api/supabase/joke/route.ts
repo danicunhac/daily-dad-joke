@@ -1,6 +1,6 @@
 import { getTodaysJoke } from '../utils';
 
-export async function GET(req: Request): Promise<Response> {
+export async function GET(): Promise<Response> {
   try {
     const joke = await getTodaysJoke();
 

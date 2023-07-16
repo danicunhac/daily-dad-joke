@@ -1,10 +1,4 @@
-import {
-  FaTwitter,
-  FaFacebook,
-  FaLinkedin,
-  FaGithub,
-  FaArrowRight,
-} from 'react-icons/fa';
+import { FaGithub, FaArrowRight } from 'react-icons/fa';
 import Image from 'next/image';
 import { headers } from 'next/headers';
 
@@ -22,6 +16,7 @@ export default async function Home() {
 
   const joke = await fetch(`${protocol}://${host}/api/supabase/joke`, {
     method: 'GET',
+    cache: 'no-store',
   }).then((res) => res.json());
 
   const jokes = (await fetch(`${protocol}://${host}/api/supabase/jokes`, {
@@ -29,6 +24,7 @@ export default async function Home() {
     headers: {
       joke: JSON.stringify(joke),
     },
+    cache: 'no-store',
   }).then((res) => res.json())) as JokeObject[];
 
   const mappedJokes = jokes.map((joke) => {
@@ -119,8 +115,8 @@ export default async function Home() {
         </div>
         <div className="flex flex-1 flex-col py-4 gap-8 max-w-850">
           <p className="text-3xl font-semibold">{`${joke?.question}`}</p>
-          <p className="italic text-3xl font-normal">
-            {`${joke?.answer}`} <span className="text-slate-400">- Dad</span>
+          <p className="italic text-3xl font-normal text-slate-300">
+            {`${joke?.answer}`} <span className="text-slate-300">- Dad</span>
           </p>
         </div>
       </section>
