@@ -15,6 +15,8 @@ type JokeData = {
   };
 };
 
+export const revalidate = 0;
+
 const fetcher: Fetcher<
   unknown,
   {
