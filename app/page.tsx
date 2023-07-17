@@ -1,55 +1,50 @@
-export const revalidate = 1;
+'use client';
 
+import useSWR, { Fetcher } from 'swr';
 import { FaGithub, FaArrowRight } from 'react-icons/fa';
 import Image from 'next/image';
-import { headers } from 'next/headers';
+import { useState } from 'react';
 
-type JokeObject = {
+type JokeData = {
   id: string;
   created_at: string;
-  joke: string;
+  joke: {
+    question: string;
+    answer: string;
+  };
 };
 
-const weekday = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+const fetcher: Fetcher<
+  unknown,
+  {
+    url: string;
+    options: RequestInit;
+  }
+> = ({ url, options }) => fetch(url, options).then((res) => res.json());
 
-export default async function Home() {
-  const host = headers().get('host');
-  const protocol = process?.env.NODE_ENV === 'development' ? 'http' : 'https';
+export default function Home() {
+  const [showAnswer, setShowAnswer] = useState(false);
 
-  const joke = await fetch(`${protocol}://${host}/api/supabase/joke`, {
-    method: 'GET',
-    cache: 'no-store',
-  }).then((res) => res.json());
+  const { data: joke } = useSWR(
+    { url: '/api/supabase/joke' },
+    fetcher
+  ) as unknown as {
+    data: JokeData['joke'];
+  };
 
-  const jokes = (await fetch(`${protocol}://${host}/api/supabase/jokes`, {
-    method: 'GET',
-    headers: {
-      joke: JSON.stringify(joke),
+  const { data: jokes } = useSWR(
+    {
+      url: `/api/supabase/jokes`,
+      options: {
+        headers: {
+          joke: JSON.stringify(joke),
+        },
+      },
     },
-    cache: 'no-store',
-  }).then((res) => res.json())) as JokeObject[];
-
-  const mappedJokes = jokes.map((joke) => {
-    const date = new Date(joke.created_at);
-
-    const created_at = `${weekday[date.getDay()]} · ${date.toLocaleDateString(
-      'en-US',
-      {
-        month: 'short',
-        day: 'numeric',
-        year: 'numeric',
-      }
-    )}`;
-
-    return {
-      id: joke.id,
-      created_at,
-      joke: JSON.parse(joke.joke),
-    };
-  });
-
-  const shareMessage =
-    `${joke.question} ${joke.answer}` + '\n\n - Shared from The Daily Dad Joke';
+    fetcher
+  ) as unknown as {
+    data: JokeData[];
+  };
 
   return (
     <main className="flex min-h-screen flex-col items-center">
@@ -74,7 +69,7 @@ export default async function Home() {
           </a>
           <a
             className="hover:text-slate-300"
-            href="https://github.com/danicunhac/daily-dad-joke"
+            href="https://github.com/danicunhac/daily-dad-joke#contact"
             target="_blank"
             rel="noopener noreferrer"
           >
@@ -82,7 +77,7 @@ export default async function Home() {
           </a>
           <a
             className="hover:text-slate-300"
-            href="https://github.com/danicunhac/daily-dad-joke"
+            href="https://github.com/danicunhac/daily-dad-joke#contributing"
             target="_blank"
             rel="noopener noreferrer"
           >
@@ -111,21 +106,31 @@ export default async function Home() {
           <p className="text-3xl font-light mb-12">
             Cause dads are funny, right?
           </p>
-          {/* <button className="w-fit py-2 px-10 bg-white rounded-3xl text-black border border-black">
+          <button
+            onClick={() => {
+              setShowAnswer(true);
+            }}
+            className="w-fit py-2 px-10 bg-white rounded-3xl text-black border border-black hover:bg-gray-200"
+          >
             Make me laugh
-          </button> */}
+          </button>
         </div>
-        <div className="flex flex-1 flex-col py-4 gap-8 max-w-850">
-          <p className="text-3xl font-semibold">{`${joke?.question}`}</p>
-          <p className="italic text-3xl font-normal text-slate-300">
-            {`${joke?.answer}`} <span className="text-slate-300">- Dad</span>
-          </p>
-        </div>
+        {joke ? (
+          <div className="flex flex-1 flex-col py-4 gap-8 max-w-850">
+            <p className="text-3xl font-semibold">{`${joke?.question}`}</p>
+            {showAnswer ? (
+              <p className="italic text-3xl font-normal text-slate-300">
+                {`${joke?.answer}`}{' '}
+                <span className="text-slate-300">- Dad</span>
+              </p>
+            ) : null}
+          </div>
+        ) : null}
       </section>
       <section className="py-20 px-16 flex-1 w-full">
         {jokes ? (
           <ol className="grid gap-24 grid-cols-3">
-            {mappedJokes.map(({ id, created_at, joke }, index) => {
+            {jokes.map(({ id, created_at, joke }, index) => {
               return (
                 <li className="flex gap-6" key={id}>
                   <span className="text-3xl	text-teal-500/50 font-bold">

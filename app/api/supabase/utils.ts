@@ -33,7 +33,7 @@ export async function getTodaysJoke(): Promise<string> {
   }
 
   // Save the joke
-  await insertJoke(JSON.parse(newJoke), currentDate);
+  await insertJoke(newJoke, currentDate);
 
   return newJoke;
 }

@@ -15,7 +15,7 @@ export async function getJoke() {
     .createCompletion({
       model: 'text-davinci-003',
       prompt:
-        'Tell me a dad joke related to work environment. The answer should be structured in json format, like this: { "question": QUESTION, "answer": ANSWER }',
+        'Tell me an original Dad Joke. The answer should be structured in json format, like this: { "question": QUESTION, "answer": ANSWER }',
       max_tokens: 60,
       temperature: 1,
       top_p: 1,
