@@ -4,6 +4,7 @@ import useSWR, { Fetcher } from 'swr';
 import { FaGithub, FaArrowRight } from 'react-icons/fa';
 import Image from 'next/image';
 import { useState } from 'react';
+import Link from 'next/link';
 
 type JokeData = {
   id: string;
@@ -62,14 +63,9 @@ export default function Home() {
           The Daily Dad Joke
         </h1>
         <div className="flex items-center gap-16">
-          <a
-            className="hover:text-slate-300"
-            href="https://github.com/danicunhac/daily-dad-joke"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
+          <Link className="hover:text-slate-300" href="#jokes">
             Jokes
-          </a>
+          </Link>
           <a
             className="hover:text-slate-300"
             href="https://github.com/danicunhac/daily-dad-joke#contact"
@@ -130,7 +126,7 @@ export default function Home() {
           </div>
         ) : null}
       </section>
-      <section className="py-20 px-16 flex-1 w-full">
+      <section id="jokes" className="py-20 px-16 flex-1 w-full">
         {jokes ? (
           <ol className="grid gap-24 grid-cols-3">
             {jokes.map(({ id, created_at, joke }, index) => {
