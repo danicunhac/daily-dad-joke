@@ -3,15 +3,9 @@ import { getJokes } from '../utils';
 
 const weekday = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
-export async function GET(req: NextRequest): Promise<Response> {
+export async function GET(): Promise<Response> {
   try {
-    const joke = req.headers.get('joke');
-
-    if (!joke) {
-      return new Response('No joke provided', { status: 400 });
-    }
-
-    const result = await getJokes(joke);
+    const result = await getJokes();
 
     const mappedJokes = result.map((joke) => {
       const date = new Date(joke.created_at);

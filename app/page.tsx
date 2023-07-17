@@ -26,7 +26,12 @@ export default function Home() {
   const [showAnswer, setShowAnswer] = useState(false);
 
   const { data: joke } = useSWR(
-    { url: '/api/supabase/joke' },
+    {
+      url: '/api/supabase/joke',
+      options: {
+        cache: 'no-cache',
+      },
+    },
     fetcher
   ) as unknown as {
     data: JokeData['joke'];
@@ -36,9 +41,7 @@ export default function Home() {
     {
       url: `/api/supabase/jokes`,
       options: {
-        headers: {
-          joke: JSON.stringify(joke),
-        },
+        cache: 'no-cache',
       },
     },
     fetcher

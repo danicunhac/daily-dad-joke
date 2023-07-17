@@ -83,13 +83,15 @@ async function insertJoke(joke: string, created_at: string): Promise<void> {
   }
 }
 
-export async function getJokes(currentJoke: string): Promise<Joke[]> {
+export async function getJokes(): Promise<Joke[]> {
+  const currentDate = new Date().toISOString().split('T')[0];
+
   try {
     const { data } = (await supabase
       .from('jokes')
       .select()
       .order('created_at', { ascending: false })
-      .neq('joke', currentJoke)) as unknown as { data: Joke[] };
+      .neq('created_at', currentDate)) as unknown as { data: Joke[] };
 
     return data;
   } catch {
