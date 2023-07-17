@@ -1,4 +1,14 @@
 {
   "version": 2,
-  "public": false
+  "public": false,
+  "crons": [
+    {
+      "path": "/api/supabase/joke",
+      "schedule": "0 0 * * *"
+    },
+    {
+      "path": "/api/supabase/jokes",
+      "schedule": "0 0 * * *"
+    }
+  ]
 }
