@@ -29,7 +29,7 @@ export default function Home() {
     {
       url: '/api/supabase/joke',
       options: {
-        cache: 'no-cache',
+        cache: 'no-store',
       },
     },
     fetcher
@@ -41,7 +41,7 @@ export default function Home() {
     {
       url: `/api/supabase/jokes`,
       options: {
-        cache: 'no-cache',
+        cache: 'no-store',
       },
     },
     fetcher
