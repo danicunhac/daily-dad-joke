@@ -21,9 +21,8 @@ export async function GET(): Promise<Response> {
       )}`;
 
       return {
-        id: joke.id,
+        ...joke,
         created_at,
-        joke: JSON.parse(joke.joke),
       };
     });
 

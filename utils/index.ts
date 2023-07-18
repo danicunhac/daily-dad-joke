@@ -13,10 +13,9 @@ const config = new Configuration({
 
 const openai = new OpenAIApi(config);
 
-const formalize = (text: string) =>
-  JSON.stringify(JSON.parse(text.trim().replace(/\n/g, '')));
+const formalize = (text: string) => JSON.parse(text.trim().replace(/\n/g, ''));
 
-export async function getJoke(): Promise<string> {
+export async function getJoke(): Promise<Joke['content']> {
   const { choices } = (await openai
     .createCompletion({
       model: 'text-davinci-003',
@@ -38,12 +37,15 @@ export async function getJoke(): Promise<string> {
 }
 
 export type Joke = {
-  id: number;
-  joke: string;
+  id?: number;
+  content: {
+    question: string;
+    answer: string;
+  };
   created_at: string;
 };
 
-export async function getTodaysJoke(): Promise<string> {
+export async function getTodaysJoke(): Promise<Joke> {
   // Check if we have a joke for today
   const currentDate = new Date().toISOString().split('T')[0];
 
@@ -54,7 +56,7 @@ export async function getTodaysJoke(): Promise<string> {
   }
 
   // If not, get a new joke from OpenAI
-  const newJoke = await getJoke();
+  const newJoke = (await getJoke()) as Joke['content'];
 
   // Check if the joke already exists
   const jokeAlreadyExists = await checkJokeExists(newJoke);
@@ -66,10 +68,10 @@ export async function getTodaysJoke(): Promise<string> {
   // Save the joke
   await insertJoke(newJoke, currentDate);
 
-  return newJoke;
+  return { content: newJoke, created_at: currentDate };
 }
 
-async function checkJokeOfTheDay(created_at: string) {
+async function checkJokeOfTheDay(created_at: string): Promise<Joke | null> {
   try {
     const { data } = await supabase
       .from('jokes')
@@ -77,8 +79,9 @@ async function checkJokeOfTheDay(created_at: string) {
       .eq('created_at', created_at);
 
     if (data && data.length > 0) {
-      const [{ joke }] = data;
-      return joke;
+      const [joke] = data;
+
+      return joke as Joke;
     }
   } catch {
     console.error('Error checking joke of the day');
@@ -87,9 +90,12 @@ async function checkJokeOfTheDay(created_at: string) {
   return null;
 }
 
-async function checkJokeExists(joke: string): Promise<boolean> {
+async function checkJokeExists(content: Joke['content']): Promise<boolean> {
   try {
-    const { data } = await supabase.from('jokes').select().eq('joke', joke);
+    const { data } = await supabase
+      .from('jokes')
+      .select()
+      .eq('content', content);
 
     if (data && data.length > 0) {
       return true;
@@ -101,12 +107,15 @@ async function checkJokeExists(joke: string): Promise<boolean> {
   return false;
 }
 
-async function insertJoke(joke: string, created_at: string): Promise<void> {
+async function insertJoke(
+  content: Joke['content'],
+  created_at: string
+): Promise<void> {
   try {
     await supabase.from('jokes').insert([
       {
         created_at,
-        joke,
+        content,
       },
     ]);
   } catch {

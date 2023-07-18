@@ -1,18 +1,12 @@
 'use client';
-import { useState } from 'react';
+import { useState, Suspense } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import useSWR, { Fetcher } from 'swr';
 import { FaGithub, FaArrowRight } from 'react-icons/fa';
+import ContentLoader from 'react-content-loader';
 
-type JokeData = {
-  id: string;
-  created_at: string;
-  joke: {
-    question: string;
-    answer: string;
-  };
-};
+import { Joke } from '@/utils';
 
 export const revalidate = 0;
 
@@ -36,7 +30,7 @@ export default function Home() {
     },
     fetcher
   ) as unknown as {
-    data: JokeData['joke'];
+    data: Joke;
   };
 
   const { data: jokes } = useSWR(
@@ -48,7 +42,7 @@ export default function Home() {
     },
     fetcher
   ) as unknown as {
-    data: JokeData[];
+    data: Joke[];
   };
 
   return (
@@ -117,20 +111,32 @@ export default function Home() {
         </div>
         {joke ? (
           <div className="flex flex-1 flex-col py-4 gap-8 max-w-850">
-            <p className="text-3xl font-semibold">{`${joke?.question}`}</p>
+            <p className="text-3xl font-semibold">{`${joke?.content?.question}`}</p>
             {showAnswer ? (
               <p className="italic text-3xl font-normal text-slate-300">
-                {`${joke?.answer}`}{' '}
+                {`${joke?.content?.answer}`}{' '}
                 <span className="text-slate-300">- Dad</span>
               </p>
             ) : null}
           </div>
-        ) : null}
+        ) : (
+          <ContentLoader
+            speed={2}
+            width={500}
+            height={150}
+            viewBox="0 0 500 150"
+            backgroundColor="#f3f3f375"
+            foregroundColor="#ecebeb75"
+          >
+            <rect x="18" y="23" rx="3" ry="3" width="450" height="11" />
+            <rect x="18" y="48" rx="3" ry="3" width="350" height="11" />
+          </ContentLoader>
+        )}
       </section>
       <section id="jokes" className="py-20 px-16 flex-1 w-full">
-        {jokes ? (
+        {jokes?.length ? (
           <ol className="grid gap-24 grid-cols-3">
-            {jokes.map(({ id, created_at, joke }, index) => {
+            {jokes.map(({ id, created_at, content }, index) => {
               return (
                 <li className="flex gap-6" key={id}>
                   <span className="text-3xl	text-teal-500/50 font-bold">
@@ -138,9 +144,9 @@ export default function Home() {
                   </span>
                   <div>
                     <div className="flex flex-1 flex-col justify-center max-w-850 gap-2">
-                      <p className="text-black font-semibold">{`${joke.question}`}</p>
+                      <p className="text-black font-semibold">{`${content.question}`}</p>
                       <p className="text-black/75 font-normal">
-                        {`${joke.answer}`}{' '}
+                        {`${content.answer}`}{' '}
                       </p>
                       <time className="text-sm font-normal leading-none text-gray-500">
                         {created_at}
@@ -151,7 +157,21 @@ export default function Home() {
               );
             })}
           </ol>
-        ) : null}
+        ) : (
+          <ContentLoader
+            speed={2}
+            width={500}
+            height={150}
+            viewBox="0 0 500 150"
+            backgroundColor="#f3f3f3"
+            foregroundColor="#ecebeb"
+          >
+            <rect x="57" y="18" rx="3" ry="3" width="140" height="11" />
+            <rect x="60" y="58" rx="3" ry="3" width="100" height="11" />
+            <rect x="58" y="36" rx="3" ry="3" width="140" height="11" />
+            <circle cx="25" cy="35" r="19" />
+          </ContentLoader>
+        )}
       </section>
     </main>
   );
