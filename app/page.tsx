@@ -134,7 +134,7 @@ export default function Home() {
         )}
       </section>
       <section id="jokes" className="py-20 px-16 flex-1 w-full">
-        {jokes?.length ? (
+        {Array.isArray(jokes) ? (
           <ol className="grid gap-24 grid-cols-3">
             {jokes.map(({ id, created_at, content }, index) => {
               return (
