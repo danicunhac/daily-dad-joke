@@ -1,10 +1,9 @@
 'use client';
-
+import { useState } from 'react';
+import Image from 'next/image';
+import Link from 'next/link';
 import useSWR, { Fetcher } from 'swr';
 import { FaGithub, FaArrowRight } from 'react-icons/fa';
-import Image from 'next/image';
-import { useState } from 'react';
-import Link from 'next/link';
 
 type JokeData = {
   id: string;

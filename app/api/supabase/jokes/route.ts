@@ -1,5 +1,6 @@
-import { NextRequest } from 'next/server';
-import { getJokes } from '../utils';
+import { getJokes } from '@/utils';
+
+export const revalidate = 0;
 
 const weekday = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 

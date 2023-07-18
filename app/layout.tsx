@@ -8,6 +8,8 @@ export const metadata = {
   description: 'AI generated dad jokes. Cause dads are funny, right?',
 };
 
+export const revalidate = 0;
+
 export default function RootLayout({
   children,
 }: {

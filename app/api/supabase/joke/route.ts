@@ -1,4 +1,6 @@
-import { getTodaysJoke } from '../utils';
+import { getTodaysJoke } from '@/utils';
+
+export const revalidate = 0;
 
 export async function GET(): Promise<Response> {
   try {
