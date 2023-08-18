@@ -20,7 +20,7 @@ export async function getJoke(): Promise<Joke['content']> {
     .createCompletion({
       model: 'text-davinci-003',
       prompt:
-        'Tell me a dad joke related to family meetings. The answer should be structured in json format, like this: { "question": QUESTION, "answer": ANSWER }',
+        'Tell me a dad joke related to family meetings. The answer should be structured in json format, like this: { "question": QUESTION, "answer": ANSWER }. The joke must be funny.',
       max_tokens: 60,
       temperature: 0.5,
       top_p: 1,
