@@ -135,7 +135,7 @@ export default function Home() {
       </section>
       <section id="jokes" className="py-20 px-16 flex-1 w-full">
         {Array.isArray(jokes) ? (
-          <ol className="grid gap-24 grid-cols-3">
+          <ol className="grid gap-24 grid-cols-3 max-[900px]:grid-cols-2 max-[580px]:grid-cols-1">
             {jokes.map(({ id, created_at, content }, index) => {
               return (
                 <li className="flex gap-6" key={id}>
