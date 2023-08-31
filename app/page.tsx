@@ -46,7 +46,7 @@ export default function Home() {
   };
 
   return (
-    <main className="flex min-h-screen flex-col items-center">
+    <main className="flex min-h-screen flex-col items-center w-full">
       <header className="flex w-full items-center justify-between py-4 px-16 bg-blue-background text-white font-light border-b border-black">
         <h1 className="flex items-center gap-4">
           <Image
@@ -57,7 +57,7 @@ export default function Home() {
           />
           The Daily Dad Joke
         </h1>
-        <div className="flex items-center gap-16">
+        <div className="flex items-center gap-16 max-[768px]:hidden">
           <Link className="hover:text-slate-300" href="#jokes">
             Jokes
           </Link>
@@ -91,9 +91,22 @@ export default function Home() {
             </h2>
           </a>
         </div>
+        <a
+          href="https://github.com/danicunhac/daily-dad-joke"
+          className="flex items-center group rounded-lg border border-transparent transition-colors self-end min-[768px]:hidden"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <h2 className={`flex items-center gap-1 text-2xl font-semibold`}>
+            <FaGithub size={24} />
+            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
+              <FaArrowRight size={15} />
+            </span>
+          </h2>
+        </a>
       </header>
       <section className="flex w-full max-w-1920 py-24 px-16 bg-blue-background text-white gap-24 bg-[url('/dad-emoji.svg')] bg-no-repeat bg-[right_bottom_-5rem] border-b border-black">
-        <div className="flex flex-1 flex-col max-w-500">
+        <div className="flex flex-1 flex-col max-w-500 max-[768px]:hidden">
           <h2 className={`mb-6 text-7xl font-serif`}>
             AI Generated Dad Jokes.{' '}
           </h2>
@@ -104,7 +117,7 @@ export default function Home() {
             onClick={() => {
               setShowAnswer(true);
             }}
-            className="w-fit py-2 px-10 bg-white rounded-3xl text-black border border-black hover:bg-gray-200"
+            className="w-fit py-2 px-10 bg-white rounded-3xl text-black border border-black hover:bg-gray-200 max-[768px]:hidden"
           >
             Make me laugh
           </button>
@@ -112,12 +125,23 @@ export default function Home() {
         {joke ? (
           <div className="flex flex-1 flex-col py-4 gap-8 max-w-850">
             <p className="text-3xl font-semibold">{`${joke?.content?.question}`}</p>
-            {showAnswer ? (
-              <p className="italic text-3xl font-normal text-slate-300">
-                {`${joke?.content?.answer}`}{' '}
-                <span className="text-slate-300">- Dad</span>
-              </p>
-            ) : null}
+            <p
+              className={`italic text-3xl font-normal text-slate-300 ${
+                showAnswer ? 'opacity-100' : 'opacity-0'
+              }`}
+            >
+              {`${joke?.content?.answer}`}{' '}
+              <span className="text-slate-300">- Dad</span>
+            </p>
+
+            <button
+              onClick={() => {
+                setShowAnswer(true);
+              }}
+              className="w-fit py-2 px-10 bg-white rounded-3xl text-black border border-black hover:bg-gray-200 min-[768px]:hidden"
+            >
+              Make me laugh
+            </button>
           </div>
         ) : (
           <ContentLoader
@@ -135,7 +159,7 @@ export default function Home() {
       </section>
       <section id="jokes" className="py-20 px-16 flex-1 w-full">
         {Array.isArray(jokes) ? (
-          <ol className="grid gap-24 grid-cols-3">
+          <ol className="grid gap-24 grid-cols-3 max-[900px]:grid-cols-2 max-[580px]:grid-cols-1">
             {jokes.map(({ id, created_at, content }, index) => {
               return (
                 <li className="flex gap-6" key={id}>
