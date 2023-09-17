@@ -1,5 +1,5 @@
 'use client';
-import { useState, Suspense } from 'react';
+import { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import useSWR, { Fetcher } from 'swr';
@@ -113,14 +113,16 @@ export default function Home() {
           <p className="text-3xl font-light mb-12">
             Cause dads are funny, right?
           </p>
-          <button
-            onClick={() => {
-              setShowAnswer(true);
-            }}
-            className="w-fit py-2 px-10 bg-white rounded-3xl text-black border border-black hover:bg-gray-200 max-[768px]:hidden"
-          >
-            Make me laugh
-          </button>
+          {joke ? (
+            <button
+              onClick={() => {
+                setShowAnswer(true);
+              }}
+              className="w-fit py-2 px-10 bg-white rounded-3xl text-black border border-black hover:bg-gray-200 max-[768px]:hidden"
+            >
+              Make me laugh
+            </button>
+          ) : null}
         </div>
         {joke ? (
           <div className="flex flex-1 flex-col py-4 gap-8 max-w-850">
@@ -162,7 +164,7 @@ export default function Home() {
           <ol className="grid gap-24 grid-cols-3 max-[900px]:grid-cols-2 max-[580px]:grid-cols-1">
             {jokes.map(({ id, created_at, content }, index) => {
               return (
-                <li className="flex gap-6" key={id}>
+                <li className="flex gap-6" key={created_at}>
                   <span className="text-3xl	text-teal-500/50 font-bold">
                     {(index + 1).toString().padStart(2, '0')}
                   </span>

@@ -1,4 +1,4 @@
-import { getJokes } from '@/utils';
+import { getExistingJokes } from '@/utils';
 
 export const revalidate = 0;
 
@@ -6,7 +6,7 @@ const weekday = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
 export async function GET(): Promise<Response> {
   try {
-    const result = await getJokes();
+    const result = await getExistingJokes();
 
     const mappedJokes = result.map((joke) => {
       const date = new Date(joke.created_at);
