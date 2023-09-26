@@ -47,7 +47,7 @@ export default function Home() {
 
   return (
     <main className="flex min-h-screen flex-col items-center w-full">
-      <header className="flex w-full items-center justify-between py-4 px-16 bg-blue-background text-white font-light border-b border-black">
+      <header className="sticky top-0 flex w-full items-center justify-between py-4 px-16 bg-blue-background text-white font-light border-b border-black">
         <h1 className="flex items-center gap-4">
           <Image
             src="/favicon.ico"
