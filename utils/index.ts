@@ -19,7 +19,7 @@ export async function getJoke(previousJoke?: string): Promise<Joke['content']> {
   It must not have line breaks`;
 
   const { choices } = await openai.chat.completions.create({
-    model: 'gpt-3.5-turbo',
+    model: 'gpt-4',
     messages: [
       previousJoke
         ? {
@@ -103,11 +103,7 @@ async function checkJokeExists(content: Joke['content']): Promise<boolean> {
       .eq('content', JSON.stringify(content))
       .single();
 
-    if (!data || error) {
-      return false;
-    }
-
-    return true;
+    return !!data || !!error;
   } catch {
     console.error('Error checking joke exists');
   }
