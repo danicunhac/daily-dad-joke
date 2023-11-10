@@ -19,7 +19,7 @@ export async function getJoke(previousJoke?: string): Promise<Joke['content']> {
   It must not have line breaks`;
 
   const { choices } = await openai.chat.completions.create({
-    model: 'gpt-4',
+    model: 'gpt-3.5-turbo',
     messages: [
       previousJoke
         ? {
