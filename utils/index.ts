@@ -16,16 +16,16 @@ const formalize = (text: string) => JSON.parse(text.trim().replace(/\n/g, ''));
 export async function getJoke(existingJokes: Joke[]): Promise<Joke['content']> {
   const prompt = `Tell me a dad joke. 
   The answer must be structured in json format like the following: {"question": QUESTION, "answer": ANSWER}. 
-  It must not have line breaks and should not be the same as the previous jokes.`;
+  It must not have line breaks. It must not be the same as any of the content of the previous jokes ${JSON.stringify(
+    existingJokes
+  )}`;
 
   const { choices } = await openai.chat.completions.create({
     model: 'gpt-4',
     messages: [
       {
-        role: 'user',
-        content: `${prompt}. It must not be the same as any of the content of the previous jokes ${JSON.stringify(
-          existingJokes
-        )}`,
+        role: 'system',
+        content: prompt,
       },
     ],
     temperature: 1,
