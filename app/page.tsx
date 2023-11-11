@@ -3,7 +3,7 @@ import { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import useSWR, { Fetcher } from 'swr';
-import { FaGithub, FaArrowRight } from 'react-icons/fa';
+import { FaGithub, FaArrowRight, FaRibbon } from 'react-icons/fa';
 import ContentLoader from 'react-content-loader';
 
 import { Joke } from '@/utils';
@@ -51,6 +51,13 @@ export default function Home() {
           The Daily Dad Joke
         </h1>
         <div className="flex items-center gap-16 max-[768px]:hidden">
+          <a
+            href="https://dorconsultoria.com.br/blue-november-2023/?lang=en"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <FaRibbon size={20} color="#00C2FF" />
+          </a>
           <Link className="hover:text-slate-300" href="#jokes">
             Jokes
           </Link>
