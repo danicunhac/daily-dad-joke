@@ -51,19 +51,6 @@ export default function Home() {
           The Daily Dad Joke
         </h1>
         <div className="flex items-center gap-16 max-[768px]:hidden">
-          <a
-            href="https://www.producthunt.com/posts/the-daily-dad-joke?utm_source=badge-featured&utm_medium=badge&utm_souce=badge-the&#0045;daily&#0045;dad&#0045;joke"
-            target="_blank"
-          >
-            {
-              /*eslint-disable-next-line @next/next/no-img-element*/
-              <img
-                src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=416417&theme=dark"
-                alt="The&#0032;Daily&#0032;Dad&#0032;Joke - AI&#0032;generated&#0032;dad&#0032;jokes&#0032;&#0045;&#0032;because&#0032;dads&#0032;are&#0032;funny&#0044;&#0032;right&#0063; | Product Hunt"
-                style={{ height: '36px' }}
-              />
-            }
-          </a>
           <Link className="hover:text-slate-300" href="#jokes">
             Jokes
           </Link>
