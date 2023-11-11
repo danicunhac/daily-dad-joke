@@ -13,23 +13,20 @@ const openai = new OpenAI({
 
 const formalize = (text: string) => JSON.parse(text.trim().replace(/\n/g, ''));
 
-export async function getJoke(previousJoke?: string): Promise<Joke['content']> {
+export async function getJoke(existingJokes: Joke[]): Promise<Joke['content']> {
   const prompt = `Tell me a dad joke. 
   The answer must be structured in json format like the following: {"question": QUESTION, "answer": ANSWER}. 
-  It must not have line breaks`;
+  It must not have line breaks and should not be the same as the previous jokes.`;
 
   const { choices } = await openai.chat.completions.create({
-    model: 'gpt-3.5-turbo',
+    model: 'gpt-4',
     messages: [
-      previousJoke
-        ? {
-            role: 'user',
-            content: `${prompt}. It must not be the same as the previous joke: ${previousJoke}`,
-          }
-        : {
-            role: 'user',
-            content: prompt,
-          },
+      {
+        role: 'user',
+        content: `${prompt}. It must not be the same as any of the content of the previous jokes ${JSON.stringify(
+          existingJokes
+        )}`,
+      },
     ],
     temperature: 1,
     frequency_penalty: 1,
@@ -54,29 +51,24 @@ export type Joke = {
   created_at: string;
 };
 
-export async function getTodaysJoke(previousJoke?: string): Promise<Joke> {
+export async function getJokes(): Promise<Joke[]> {
   // Check if we have a joke for today
   const currentDate = new Date().toISOString().split('T')[0];
+
+  const existingJokes = await getExistingJokes();
 
   const jokeOfTheDay = await checkJokeOfTheDay(currentDate);
 
   if (jokeOfTheDay) {
-    return jokeOfTheDay;
+    return [jokeOfTheDay, ...existingJokes];
   }
 
   // If not, get a new joke from OpenAI
-  const newJoke = (await getJoke(previousJoke)) as Joke['content'];
-
-  // Check if the joke already exists
-  const jokeAlreadyExists = await checkJokeExists(newJoke);
-
-  if (jokeAlreadyExists) {
-    return getTodaysJoke(JSON.stringify(newJoke));
-  }
+  const newJoke = (await getJoke(existingJokes)) as Joke['content'];
 
   const joke = await insertJoke(newJoke, currentDate);
 
-  return joke;
+  return [joke, ...existingJokes];
 }
 
 async function checkJokeOfTheDay(created_at: string): Promise<Joke | null> {
@@ -93,22 +85,6 @@ async function checkJokeOfTheDay(created_at: string): Promise<Joke | null> {
   }
 
   return null;
-}
-
-async function checkJokeExists(content: Joke['content']): Promise<boolean> {
-  try {
-    const { data, error } = await supabase
-      .from('jokes')
-      .select('content')
-      .eq('content', JSON.stringify(content))
-      .single();
-
-    return !!data || !!error;
-  } catch {
-    console.error('Error checking joke exists');
-  }
-
-  return false;
 }
 
 async function insertJoke(
@@ -138,20 +114,39 @@ async function insertJoke(
   }
 }
 
-export async function getExistingJokes(): Promise<Joke[]> {
+const weekday = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+
+export async function getExistingJokes(fields?: string): Promise<Joke[]> {
   const currentDate = new Date().toISOString().split('T')[0];
 
   try {
     const { data } = (await supabase
       .from('jokes')
-      .select()
+      .select(fields || '*')
       .order('created_at', { ascending: false })
       .neq('created_at', currentDate)) as unknown as { data: Joke[] };
 
-    return data;
+    const mappedJokes = data.map((joke) => {
+      const date = new Date(joke.created_at);
+
+      const created_at = `${weekday[date.getDay()]} · ${date.toLocaleDateString(
+        'en-US',
+        {
+          month: 'short',
+          day: 'numeric',
+          year: 'numeric',
+        }
+      )}`;
+
+      return {
+        ...joke,
+        created_at,
+      };
+    });
+
+    return mappedJokes;
   } catch {
     console.error('Error getting jokes');
+    return [];
   }
-
-  return [];
 }

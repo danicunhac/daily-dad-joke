@@ -16,12 +16,15 @@ const fetcher: Fetcher<
     url: string;
     options: RequestInit;
   }
-> = ({ url, options }) => fetch(url, options).then((res) => res.json());
+> = ({ url, options }) =>
+  fetch(url, options)
+    .then((res) => res.json())
+    .catch((err) => console.error(err));
 
 export default function Home() {
   const [showAnswer, setShowAnswer] = useState(false);
 
-  const { data: joke } = useSWR(
+  const { data } = useSWR(
     {
       url: '/api/supabase/joke',
       options: {
@@ -30,20 +33,10 @@ export default function Home() {
     },
     fetcher
   ) as unknown as {
-    data: Joke;
-  };
-
-  const { data: jokes } = useSWR(
-    {
-      url: `/api/supabase/jokes`,
-      options: {
-        cache: 'no-store',
-      },
-    },
-    fetcher
-  ) as unknown as {
     data: Joke[];
   };
+
+  const [joke, ...jokes] = data || [];
 
   return (
     <main className="flex min-h-screen flex-col items-center w-full">
