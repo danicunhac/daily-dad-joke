@@ -98,59 +98,61 @@ export default function Home() {
           </h2>
         </a>
       </header>
-      <section className="flex w-full max-w-1920 py-24 px-16 bg-blue-background text-white gap-24 bg-[url('/dad-emoji.svg')] bg-no-repeat bg-[right_bottom_-5rem] border-b border-black">
-        <div className="flex flex-1 flex-col max-w-500 max-[768px]:hidden">
-          <h2 className={`mb-6 text-7xl font-serif`}>
-            AI Generated Dad Jokes.{' '}
-          </h2>
-          <p className="text-3xl font-light mb-12">
-            Cause dads are funny, right?
-          </p>
-          {joke ? (
-            <button
-              onClick={() => {
-                setShowAnswer(true);
-              }}
-              className="w-fit py-2 px-10 bg-white rounded-3xl text-black border border-black hover:bg-gray-200 max-[768px]:hidden"
-            >
-              Make me laugh
-            </button>
-          ) : null}
-        </div>
-        {joke ? (
-          <div className="flex flex-1 flex-col py-4 gap-8 max-w-850">
-            <p className="text-3xl font-semibold">{`${joke?.content?.question}`}</p>
-            <p
-              className={`italic text-3xl font-normal text-slate-300 ${
-                showAnswer ? 'opacity-100' : 'opacity-0'
-              }`}
-            >
-              {`${joke?.content?.answer}`}{' '}
-              <span className="text-slate-300">- Dad</span>
+      <section className="flex w-full py-24 px-16 bg-blue-background text-white gap-24 bg-[url('/dad-emoji.svg')] bg-no-repeat bg-[right_bottom_-5rem] border-b border-black items-center">
+        <div className="max-w-1920 flex w-full justify-between">
+          <div className="flex flex-1 flex-col max-w-500 max-[768px]:hidden">
+            <h2 className={`mb-6 text-7xl font-serif`}>
+              AI Generated Dad Jokes.{' '}
+            </h2>
+            <p className="text-3xl font-light mb-12">
+              Cause dads are funny, right?
             </p>
-
-            <button
-              onClick={() => {
-                setShowAnswer(true);
-              }}
-              className="w-fit py-2 px-10 bg-white rounded-3xl text-black border border-black hover:bg-gray-200 min-[768px]:hidden"
-            >
-              Make me laugh
-            </button>
+            {joke ? (
+              <button
+                onClick={() => {
+                  setShowAnswer(true);
+                }}
+                className="w-fit py-2 px-10 bg-white rounded-3xl text-black border border-black hover:bg-gray-200 max-[768px]:hidden"
+              >
+                Make me laugh
+              </button>
+            ) : null}
           </div>
-        ) : (
-          <ContentLoader
-            speed={2}
-            width={500}
-            height={150}
-            viewBox="0 0 500 150"
-            backgroundColor="#f3f3f375"
-            foregroundColor="#ecebeb75"
-          >
-            <rect x="18" y="23" rx="3" ry="3" width="450" height="11" />
-            <rect x="18" y="48" rx="3" ry="3" width="350" height="11" />
-          </ContentLoader>
-        )}
+          {joke ? (
+            <div className="flex flex-1 flex-col py-4 gap-8 max-w-850">
+              <p className="text-3xl font-semibold">{`${joke?.content?.question}`}</p>
+              <p
+                className={`italic text-3xl font-normal text-slate-300 ${
+                  showAnswer ? 'opacity-100' : 'opacity-0'
+                }`}
+              >
+                {`${joke?.content?.answer}`}{' '}
+                <span className="text-slate-300">- Dad</span>
+              </p>
+
+              <button
+                onClick={() => {
+                  setShowAnswer(true);
+                }}
+                className="w-fit py-2 px-10 bg-white rounded-3xl text-black border border-black hover:bg-gray-200 min-[768px]:hidden"
+              >
+                Make me laugh
+              </button>
+            </div>
+          ) : (
+            <ContentLoader
+              speed={2}
+              width={500}
+              height={150}
+              viewBox="0 0 500 150"
+              backgroundColor="#f3f3f375"
+              foregroundColor="#ecebeb75"
+            >
+              <rect x="18" y="23" rx="3" ry="3" width="450" height="11" />
+              <rect x="18" y="48" rx="3" ry="3" width="350" height="11" />
+            </ContentLoader>
+          )}
+        </div>
       </section>
       <section id="jokes" className="py-20 px-16 flex-1 w-full">
         {Array.isArray(jokes) ? (
