@@ -14,7 +14,7 @@ const openai = new OpenAI({
 const formalize = (text: string) => JSON.parse(text.trim().replace(/\n/g, ''));
 
 export async function getJoke(existingJokes: Joke[]): Promise<Joke['content']> {
-  const prompt = `Tell me a dad joke with a subject of new year. 
+  const prompt = `Tell me a dad joke. 
   The answer must be structured in json format like the following: {"question": QUESTION, "answer": ANSWER}. 
   It must not have line breaks. It must not be the same as any of the content of the previous jokes ${JSON.stringify(
     existingJokes
