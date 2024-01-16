@@ -21,7 +21,7 @@ export async function getJoke(existingJokes: Joke[]): Promise<Joke['content']> {
   )}`;
 
   const { choices } = await openai.chat.completions.create({
-    model: 'gpt-3.5-turbo',
+    model: 'gpt-4',
     messages: [
       {
         role: 'system',
