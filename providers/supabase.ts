@@ -1,5 +1,6 @@
 import { Joke } from '@/types';
 import { createClient } from '@supabase/supabase-js';
+import { sendJoke } from './resend';
 
 export const supabase = createClient(
   process.env.SUPABASE_URL as string,
@@ -43,6 +44,8 @@ export async function insertJoke(
     if (!joke || error) {
       throw new Error('No joke returned from Supabase');
     }
+
+    await sendJoke(joke as Joke);
 
     return joke as Joke;
   } catch (err) {
