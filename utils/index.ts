@@ -1,15 +1,5 @@
-import { createClient } from '@supabase/supabase-js';
-import { OpenAI } from 'openai';
-
-const supabase = createClient(
-  process.env.SUPABASE_URL as string,
-  process.env.SUPABASE_KEY as string
-);
-
-const openai = new OpenAI({
-  organization: 'org-RokRmPuVelTz0ngpNF9K4bl8',
-  apiKey: process.env.OPENAI_API_KEY,
-});
+import { openai } from '@/providers/openai';
+import { supabase } from '@/providers/supabase';
 
 const formalize = (text: string) => JSON.parse(text.trim().replace(/\n/g, ''));
 
