@@ -6,7 +6,7 @@ import useSWR, { Fetcher } from 'swr';
 import { FaGithub, FaArrowRight, FaRibbon } from 'react-icons/fa';
 import ContentLoader from 'react-content-loader';
 
-import { Joke } from '@/utils';
+import { Joke } from '@/types';
 
 export const revalidate = 0;
 
