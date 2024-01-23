@@ -1,4 +1,5 @@
 import { getJoke } from '@/providers/openai';
+import { sendJoke } from '@/providers/resend';
 import {
   checkJokeOfTheDay,
   getExistingJokes,
@@ -18,6 +19,8 @@ export async function getJokes(): Promise<Joke[]> {
   const jokeOfTheDay = await checkJokeOfTheDay(currentDate);
 
   if (jokeOfTheDay) {
+    await sendJoke(jokeOfTheDay);
+
     return [jokeOfTheDay, ...existingJokes];
   }
 

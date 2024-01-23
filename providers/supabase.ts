@@ -45,8 +45,6 @@ export async function insertJoke(
       throw new Error('No joke returned from Supabase');
     }
 
-    await sendJoke(joke as Joke);
-
     return joke as Joke;
   } catch (err) {
     console.error('Error inserting joke', err);
