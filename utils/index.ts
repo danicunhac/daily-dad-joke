@@ -71,7 +71,9 @@ export async function getJokes(previousJoke: Joke['content']): Promise<Joke[]> {
   const newJoke = (await getJoke(previousJoke)) as Joke['content'];
 
   const jokeAlreadyExists = existingJokes.find(
-    (joke) => joke.content.question === newJoke.question
+    (joke) =>
+      joke.content.question === newJoke.question &&
+      joke.content.answer === newJoke.answer
   );
 
   // Circle back if the joke already exists and send the previous joke so we don't end in an infinite loop
