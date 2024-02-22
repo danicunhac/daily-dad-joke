@@ -14,7 +14,7 @@ const openai = new OpenAI({
 const formalize = (text: string) => JSON.parse(text.trim().replace(/\n/g, ''));
 
 export async function getJoke(
-  previousJoke: Joke['content']
+  previousJoke?: Joke['content']
 ): Promise<Joke['content']> {
   const prompt = `You're a funny dad, that tells dad jokes.
   Jokes should be structured as a question and an answer in json format like the following: {"question": QUESTION, "answer": ANSWER}. 
@@ -55,7 +55,9 @@ export type Joke = {
   created_at: string;
 };
 
-export async function getJokes(previousJoke: Joke['content']): Promise<Joke[]> {
+export async function getJokes(
+  previousJoke?: Joke['content']
+): Promise<Joke[]> {
   // Check if we have a joke for today
   const currentDate = new Date().toISOString().split('T')[0];
 
