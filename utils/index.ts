@@ -59,7 +59,7 @@ export async function getJokes(
   previousJoke?: Joke['content']
 ): Promise<Joke[]> {
   // Check if we have a joke for today
-  const currentDate = new Date().toISOString().split('T')[0];
+  const [currentDate] = new Date().toISOString().split('T');
 
   const existingJokes = await getExistingJokes();
 
@@ -72,11 +72,18 @@ export async function getJokes(
   // If not, get a new joke from OpenAI
   const newJoke = (await getJoke(previousJoke)) as Joke['content'];
 
+  console.log('🚀 ~ newJoke:', newJoke);
+  console.log('🚀 ~ typeof newJoke:', typeof newJoke);
+
   const jokeAlreadyExists = existingJokes.find(
     (joke) =>
       joke.content.question === newJoke.question &&
       joke.content.answer === newJoke.answer
   );
+
+  console.log('🚀 ~ existingJokes:', existingJokes);
+
+  console.log('🚀 ~ jokeAlreadyExists:', jokeAlreadyExists);
 
   // Circle back if the joke already exists and send the previous joke so we don't end in an infinite loop
   if (jokeAlreadyExists) {
