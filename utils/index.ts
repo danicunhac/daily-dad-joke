@@ -61,9 +61,10 @@ export async function getJokes(
   // Check if we have a joke for today
   const [currentDate] = new Date().toISOString().split('T');
 
-  const existingJokes = await getExistingJokes();
-
-  const jokeOfTheDay = await checkJokeOfTheDay(currentDate);
+  const [jokeOfTheDay, existingJokes] = await Promise.all([
+    checkJokeOfTheDay(currentDate),
+    getExistingJokes(),
+  ]);
 
   if (jokeOfTheDay) {
     return [jokeOfTheDay, ...existingJokes];
