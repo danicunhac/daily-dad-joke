@@ -59,7 +59,7 @@ export async function getJokes(
   previousJoke?: Joke['content']
 ): Promise<Joke[]> {
   // Check if we have a joke for today
-  const currentDate = new Date().toISOString().split('T')[0];
+  const [currentDate] = new Date().toISOString().split('T');
 
   const existingJokes = await getExistingJokes();
 
@@ -141,8 +141,7 @@ export async function getExistingJokes(fields?: string): Promise<Joke[]> {
       .from('jokes')
       .select(fields || '*')
       .order('created_at', { ascending: false })
-      .neq('created_at', currentDate)
-      .limit(100)) as unknown as { data: Joke[] };
+      .neq('created_at', currentDate)) as unknown as { data: Joke[] };
 
     const mappedJokes = data.map((joke) => {
       const date = new Date(joke.created_at);
