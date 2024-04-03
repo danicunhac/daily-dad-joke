@@ -141,6 +141,7 @@ export async function getExistingJokes(fields?: string): Promise<Joke[]> {
       .from('jokes')
       .select(fields || '*')
       .order('created_at', { ascending: false })
+      .limit(100)
       .neq('created_at', currentDate)) as unknown as { data: Joke[] };
 
     const mappedJokes = data.map((joke) => {
