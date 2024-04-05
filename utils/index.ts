@@ -73,12 +73,7 @@ export async function getJokes(
   // If not, get a new joke from OpenAI
   const newJoke = (await getJoke(previousJoke)) as Joke['content'];
 
-  const { data: jokeAlreadyExists } = await supabase
-    .from('jokes')
-    .select()
-    .filter('content->>question', 'eq', newJoke?.question)
-    .filter('content->>answer', 'eq', newJoke?.answer)
-    .single();
+  const jokeAlreadyExists = await checkJokeExists(newJoke);
 
   // Circle back if the joke already exists and send the previous joke so we don't end in an infinite loop
   if (jokeAlreadyExists) {
@@ -167,5 +162,23 @@ export async function getExistingJokes(fields?: string): Promise<Joke[]> {
   } catch {
     console.error('Error getting jokes');
     return [];
+  }
+}
+
+export async function checkJokeExists(joke: Joke['content']): Promise<boolean> {
+  const { question, answer } = joke;
+
+  try {
+    const { data: joke } = await supabase
+      .from('jokes')
+      .select()
+      .filter('content->>question', 'eq', question)
+      .filter('content->>answer', 'eq', answer)
+      .single();
+
+    return !!joke;
+  } catch {
+    console.error('Error checking joke exists');
+    return false;
   }
 }
