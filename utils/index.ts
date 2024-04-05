@@ -73,11 +73,12 @@ export async function getJokes(
   // If not, get a new joke from OpenAI
   const newJoke = (await getJoke(previousJoke)) as Joke['content'];
 
-  const jokeAlreadyExists = existingJokes.find(
-    (joke) =>
-      joke.content.question === newJoke.question &&
-      joke.content.answer === newJoke.answer
-  );
+  const { data: jokeAlreadyExists } = await supabase
+    .from('jokes')
+    .select()
+    .filter('content->>question', 'eq', newJoke?.question)
+    .filter('content->>answer', 'eq', newJoke?.answer)
+    .single();
 
   // Circle back if the joke already exists and send the previous joke so we don't end in an infinite loop
   if (jokeAlreadyExists) {
@@ -142,7 +143,6 @@ export async function getExistingJokes(fields?: string): Promise<Joke[]> {
       .from('jokes')
       .select(fields || '*')
       .order('created_at', { ascending: false })
-
       .neq('created_at', currentDate)) as unknown as { data: Joke[] };
 
     const mappedJokes = data.map((joke) => {
