@@ -3,7 +3,7 @@
   "public": false,
   "crons": [
     {
-      "path": "/api/supabase/joke",
+      "path": "/api/supabase/joke/generate",
       "schedule": "0 0 * * *"
     }
   ]
