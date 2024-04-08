@@ -40,8 +40,6 @@ export async function getJoke(
 
   const [{ message }] = choices;
 
-  console.log('🚀 ~ message:', message);
-
   if (!message?.content) {
     throw new Error('No message returned from OpenAI');
   }
