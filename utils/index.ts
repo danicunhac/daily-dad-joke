@@ -56,7 +56,9 @@ export type Joke = {
   created_at: string;
 };
 
-export async function generateJokeOfTheDay(): Promise<Joke> {
+export async function generateJokeOfTheDay(
+  previousJoke?: Joke['content']
+): Promise<Joke> {
   const [currentDate] = new Date().toISOString().split('T');
 
   const jokeOfTheDay = await checkJokeOfTheDay(currentDate);
@@ -65,12 +67,12 @@ export async function generateJokeOfTheDay(): Promise<Joke> {
     return jokeOfTheDay;
   }
 
-  const newJoke = (await getJoke()) as Joke['content'];
+  const newJoke = (await getJoke(previousJoke)) as Joke['content'];
 
   const jokeAlreadyExists = await checkJokeExists(newJoke);
 
   if (jokeAlreadyExists) {
-    return generateJokeOfTheDay();
+    return generateJokeOfTheDay(newJoke);
   }
 
   const joke = await insertJoke(newJoke, currentDate);
@@ -113,12 +115,15 @@ async function insertJoke(
       .single();
 
     if (!joke || error) {
+      console.error('No joke returned from Supabase', error.message);
       throw new Error('No joke returned from Supabase');
     }
 
     return joke as Joke;
   } catch (err) {
-    console.error('Error inserting joke', err);
+    if (err instanceof Error) {
+      console.error('Error inserting joke', err.message);
+    }
     throw new Error('Error inserting joke');
   }
 }
