@@ -3,7 +3,7 @@ import { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import useSWR, { Fetcher } from 'swr';
-import { FaGithub, FaArrowRight, FaRibbon } from 'react-icons/fa';
+import { FaGithub, FaArrowRight } from 'react-icons/fa';
 import ContentLoader from 'react-content-loader';
 
 import { Joke } from '@/utils';
