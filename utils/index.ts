@@ -115,7 +115,12 @@ async function insertJoke(
       .single();
 
     if (!joke || error) {
-      console.error('No joke returned from Supabase', error.message);
+      console.error(
+        'No joke returned from Supabase',
+        error.message,
+        content,
+        created_at
+      );
       throw new Error('No joke returned from Supabase');
     }
 
