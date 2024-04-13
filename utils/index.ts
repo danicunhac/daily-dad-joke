@@ -14,15 +14,17 @@ const openai = new OpenAI({
 const formalize = (text: string) => JSON.parse(text.trim().replace(/\n/g, ''));
 
 export async function getJoke(
-  previousJoke?: Joke['content']
+  previousJokes?: Joke['content'][]
 ): Promise<Joke['content']> {
   const prompt = `You're a funny dad, that tells dad jokes.
   Jokes should be structured as a question and an answer in json format like the following: {"question": QUESTION, "answer": ANSWER}. 
   It must not have line breaks and the question and answer must be strings. The jokes should be unique and not repeated.
   Tell me a joke.`;
 
-  if (previousJoke) {
-    prompt.concat(`Do not repeat the last joke: ${previousJoke.question}`);
+  if (previousJokes?.length) {
+    prompt.concat(
+      `Do not repeat the following jokes: ${JSON.stringify(previousJokes)}`
+    );
   }
 
   const { choices } = await openai.chat.completions.create({
@@ -57,7 +59,7 @@ export type Joke = {
 };
 
 export async function generateJokeOfTheDay(
-  previousJoke?: Joke['content']
+  previousJokes: Joke['content'][]
 ): Promise<Joke> {
   const [currentDate] = new Date().toISOString().split('T');
 
@@ -67,12 +69,12 @@ export async function generateJokeOfTheDay(
     return jokeOfTheDay;
   }
 
-  const newJoke = (await getJoke(previousJoke)) as Joke['content'];
+  const newJoke = (await getJoke(previousJokes)) as Joke['content'];
 
   const jokeAlreadyExists = await checkJokeExists(newJoke);
 
   if (jokeAlreadyExists) {
-    return generateJokeOfTheDay(newJoke);
+    return generateJokeOfTheDay([newJoke, ...previousJokes]);
   }
 
   const joke = await insertJoke(newJoke, currentDate);
