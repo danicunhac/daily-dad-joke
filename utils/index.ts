@@ -146,6 +146,8 @@ export async function getJokes(fields?: string): Promise<Joke[]> {
       data: Joke[];
     };
 
+    const [today] = new Date().toISOString().split('T');
+
     const mappedJokes = data.map((joke) => {
       const date = new Date(joke.created_at);
 
@@ -163,6 +165,14 @@ export async function getJokes(fields?: string): Promise<Joke[]> {
         created_at,
       };
     });
+
+    if (mappedJokes[0].created_at !== today) {
+      const joke = await generateJokeOfTheDay(
+        mappedJokes.map((joke) => joke.content)
+      );
+
+      mappedJokes.unshift(joke);
+    }
 
     return mappedJokes;
   } catch {
