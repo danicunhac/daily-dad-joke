@@ -139,16 +139,27 @@ const weekday = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
 export async function getJokes(fields?: string): Promise<Joke[]> {
   try {
-    const { data } = (await supabase
+    const [today] = new Date().toISOString().split('T');
+
+    const { data: unmappedJokes } = (await supabase
       .from('jokes')
       .select(fields || '*')
+      .neq('created_at', today)
       .order('created_at', { ascending: false })) as unknown as {
       data: Joke[];
     };
 
-    const [today] = new Date().toISOString().split('T');
+    let todaysJoke = await checkJokeOfTheDay(today);
 
-    const mappedJokes = data.map((joke) => {
+    if (!todaysJoke) {
+      todaysJoke = await generateJokeOfTheDay(
+        unmappedJokes.map((joke) => joke.content)
+      );
+    }
+
+    unmappedJokes.unshift(todaysJoke);
+
+    const mappedJokes = unmappedJokes.map((joke) => {
       const date = new Date(joke.created_at);
 
       const created_at = `${weekday[date.getDay()]} · ${date.toLocaleDateString(
@@ -157,6 +168,7 @@ export async function getJokes(fields?: string): Promise<Joke[]> {
           month: 'short',
           day: 'numeric',
           year: 'numeric',
+          timeZone: 'UTC',
         }
       )}`;
 
@@ -165,14 +177,6 @@ export async function getJokes(fields?: string): Promise<Joke[]> {
         created_at,
       };
     });
-
-    if (mappedJokes[0].created_at !== today) {
-      const joke = await generateJokeOfTheDay(
-        mappedJokes.map((joke) => joke.content)
-      );
-
-      mappedJokes.unshift(joke);
-    }
 
     return mappedJokes;
   } catch {
