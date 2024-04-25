@@ -61,6 +61,8 @@ export type Joke = {
 export async function generateJokeOfTheDay(
   previousJokes: Joke['content'][]
 ): Promise<Joke> {
+  console.info('Generating joke of the day... previous jokes:', previousJokes);
+
   const [currentDate] = new Date().toISOString().split('T');
 
   const jokeOfTheDay = await checkJokeOfTheDay(currentDate);
@@ -71,9 +73,13 @@ export async function generateJokeOfTheDay(
 
   const newJoke = (await getJoke(previousJokes)) as Joke['content'];
 
+  console.info('New joke generated:', newJoke);
+
   const jokeAlreadyExists = await checkJokeExists(newJoke);
 
   if (jokeAlreadyExists) {
+    console.info('Joke already exists, generating a new one..', newJoke);
+
     return generateJokeOfTheDay([newJoke, ...previousJokes]);
   }
 
