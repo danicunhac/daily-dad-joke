@@ -207,6 +207,8 @@ export async function checkJokeExists(joke: Joke['content']): Promise<boolean> {
       .from('jokes')
       .select()
       .eq('content->>question', question)
+      .eq('content->>answer', answer)
+      .limit(1)
       .single();
 
     console.log('Check joke exists result:', joke);
