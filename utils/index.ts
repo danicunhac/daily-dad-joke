@@ -206,8 +206,7 @@ export async function checkJokeExists(joke: Joke['content']): Promise<boolean> {
     const { data: joke } = await supabase
       .from('jokes')
       .select()
-      .filter('content->>question', 'eq', question)
-      .filter('content->>answer', 'eq', answer)
+      .eq('content->>question', question)
       .single();
 
     console.log('Check joke exists result:', joke);
