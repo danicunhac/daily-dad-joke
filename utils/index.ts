@@ -21,18 +21,18 @@ export async function getJoke(
   It must not have line breaks and the question and answer must be strings. The jokes should be unique and not repeated.
   Tell me a joke.`;
 
-  if (previousJokes?.length) {
-    prompt.concat(
-      `Do not repeat the following jokes: ${JSON.stringify(previousJokes)}`
-    );
-  }
+  const parsedPrompt = previousJokes?.length
+    ? `${prompt}  Do not repeat the following jokes: ${JSON.stringify(
+        previousJokes
+      )}`
+    : prompt;
 
   const { choices } = await openai.chat.completions.create({
     model: 'gpt-4',
     messages: [
       {
         role: 'system',
-        content: prompt,
+        content: parsedPrompt,
       },
     ],
     temperature: 1,
@@ -59,10 +59,8 @@ export type Joke = {
 };
 
 export async function generateJokeOfTheDay(
-  previousJokes: Joke['content'][]
+  previousJokes: Joke['content'][] = []
 ): Promise<Joke> {
-  console.info('Generating joke of the day... previous jokes:', previousJokes);
-
   const [currentDate] = new Date().toISOString().split('T');
 
   const jokeOfTheDay = await checkJokeOfTheDay(currentDate);
@@ -158,9 +156,7 @@ export async function getJokes(fields?: string): Promise<Joke[]> {
     let todaysJoke = await checkJokeOfTheDay(today);
 
     if (!todaysJoke) {
-      todaysJoke = await generateJokeOfTheDay(
-        unmappedJokes.map((joke) => joke.content)
-      );
+      todaysJoke = await generateJokeOfTheDay();
     }
 
     unmappedJokes.unshift(todaysJoke);

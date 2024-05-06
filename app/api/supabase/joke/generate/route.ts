@@ -6,7 +6,7 @@ export async function GET(): Promise<Response> {
   console.log('GET /api/supabase/joke/generate');
 
   try {
-    const newJoke = await generateJokeOfTheDay([]);
+    const newJoke = await generateJokeOfTheDay();
 
     return new Response(JSON.stringify(newJoke), { status: 200 });
   } catch (err) {
