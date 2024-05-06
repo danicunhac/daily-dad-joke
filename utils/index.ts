@@ -200,14 +200,13 @@ export async function getJokes(fields?: string): Promise<Joke[]> {
 }
 
 export async function checkJokeExists(joke: Joke['content']): Promise<boolean> {
-  const { question, answer } = joke;
+  const { question } = joke;
 
   try {
     const { data: joke } = await supabase
       .from('jokes')
       .select()
       .eq('content->>question', question)
-      .eq('content->>answer', answer)
       .limit(1)
       .single();
 
