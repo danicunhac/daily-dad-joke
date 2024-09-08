@@ -1,13 +1,14 @@
-import './globals.css';
-import { Inter } from 'next/font/google';
-import { Analytics } from '@vercel/analytics/react';
-import { SpeedInsights } from '@vercel/speed-insights/next';
+import "./globals.css";
+import { Inter } from "next/font/google";
+import { Analytics } from "@vercel/analytics/react";
+import { SpeedInsights } from "@vercel/speed-insights/next";
+import { CSPostHogProvider } from "./providers";
 
-const inter = Inter({ subsets: ['latin'] });
+const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
-  title: 'The Daily Dad Joke',
-  description: 'AI generated dad jokes. Cause dads are funny, right?',
+  title: "The Daily Dad Joke",
+  description: "AI generated dad jokes. Cause dads are funny, right?",
 };
 
 export const revalidate = 0;
@@ -34,11 +35,13 @@ export default function RootLayout({
           crossOrigin="anonymous"
         ></script>
       </head>
-      <body className={inter.className}>
-        {children}
-        <Analytics />
-        <SpeedInsights />
-      </body>
+      <CSPostHogProvider>
+        <body className={inter.className}>
+          {children}
+          <Analytics />
+          <SpeedInsights />
+        </body>
+      </CSPostHogProvider>
     </html>
   );
 }
