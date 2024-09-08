@@ -23,6 +23,7 @@
     "next": "^13.4.19",
     "openai": "^4.7.1",
     "postcss": "8.4.23",
+    "posthog-js": "^1.160.3",
     "react": "18.2.0",
     "react-content-loader": "^6.2.1",
     "react-dom": "18.2.0",
