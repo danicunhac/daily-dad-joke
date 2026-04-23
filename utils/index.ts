@@ -1,5 +1,5 @@
-import { createClient } from '@supabase/supabase-js';
-import { OpenAI } from 'openai';
+import { createClient } from "@supabase/supabase-js";
+import { OpenAI } from "openai";
 
 const supabase = createClient(
   process.env.SUPABASE_URL as string,
@@ -7,32 +7,41 @@ const supabase = createClient(
 );
 
 const openai = new OpenAI({
-  organization: 'org-RokRmPuVelTz0ngpNF9K4bl8',
-  apiKey: process.env.OPENAI_API_KEY,
+  baseURL: "https://openrouter.ai/api/v1",
+  apiKey: process.env.OPENROUTER_API_KEY,
 });
 
-const formalize = (text: string) => JSON.parse(text.trim().replace(/\n/g, ''));
+const formalize = (text: string) => JSON.parse(text.trim().replace(/\n/g, ""));
 
 export async function getJoke(
-  previousJokes?: Joke['content'][]
-): Promise<Joke['content']> {
-  const prompt = `You're a funny dad, that tells dad jokes.
-  Jokes should be structured as a question and an answer in json format like the following: {"question": QUESTION, "answer": ANSWER}. 
+  previousJokes?: Joke["content"][]
+): Promise<Joke["content"]> {
+  const prompt = `
+  <start role>
+  You're a funny dad, that tells dad jokes.
+  </start role>
+  <start instructions>
+  Jokes should be structured as a question and an answer in json format like the schema provided. 
   It must not have line breaks and the question and answer must be strings. The jokes should be unique and not repeated.
-  Tell me a joke.`;
-
-  const parsedPrompt = previousJokes?.length
-    ? `${prompt}  Do not repeat the following jokes: ${JSON.stringify(
-        previousJokes
-      )}`
-    : prompt;
+  </start instructions>
+  <start schema>
+  { "question": QUESTION, "answer": ANSWER }
+  </start schema>
+  <start previous jokes>
+  Do not repeat the following jokes: ${JSON.stringify(previousJokes) || ""}
+  </start previous jokes>
+  `;
 
   const { choices } = await openai.chat.completions.create({
-    model: 'gpt-4o-mini',
+    model: "openai/gpt-4o-mini",
     messages: [
       {
-        role: 'system',
-        content: parsedPrompt,
+        role: "system",
+        content: prompt,
+      },
+      {
+        role: "user",
+        content: "Tell me a joke.",
       },
     ],
     temperature: 1,
@@ -43,7 +52,7 @@ export async function getJoke(
   const [{ message }] = choices;
 
   if (!message?.content) {
-    throw new Error('No message returned from OpenAI');
+    throw new Error("No message returned from OpenRouter");
   }
 
   return formalize(message.content);
@@ -59,9 +68,9 @@ export type Joke = {
 };
 
 export async function generateJokeOfTheDay(
-  previousJokes: Joke['content'][] = []
+  previousJokes: Joke["content"][] = []
 ): Promise<Joke> {
-  const [currentDate] = new Date().toISOString().split('T');
+  const [currentDate] = new Date().toISOString().split("T");
 
   const jokeOfTheDay = await checkJokeOfTheDay(currentDate);
 
@@ -69,14 +78,14 @@ export async function generateJokeOfTheDay(
     return jokeOfTheDay;
   }
 
-  const newJoke = (await getJoke(previousJokes)) as Joke['content'];
+  const newJoke = (await getJoke(previousJokes)) as Joke["content"];
 
-  console.info('New joke generated:', newJoke);
+  console.info("New joke generated:", newJoke);
 
   const jokeAlreadyExists = await checkJokeExists(newJoke);
 
   if (jokeAlreadyExists) {
-    console.info('Joke already exists, generating a new one..', newJoke);
+    console.info("Joke already exists, generating a new one..", newJoke);
 
     return generateJokeOfTheDay([newJoke, ...previousJokes]);
   }
@@ -91,26 +100,26 @@ export async function checkJokeOfTheDay(
 ): Promise<Joke | null> {
   try {
     const { data: joke } = await supabase
-      .from('jokes')
+      .from("jokes")
       .select()
-      .eq('created_at', created_at)
+      .eq("created_at", created_at)
       .single();
 
     return joke as Joke;
   } catch {
-    console.error('Error checking joke of the day');
+    console.error("Error checking joke of the day");
   }
 
   return null;
 }
 
 async function insertJoke(
-  content: Joke['content'],
+  content: Joke["content"],
   created_at: string
 ): Promise<Joke> {
   try {
     const { data: joke, error } = await supabase
-      .from('jokes')
+      .from("jokes")
       .insert([
         {
           created_at,
@@ -122,34 +131,34 @@ async function insertJoke(
 
     if (!joke || error) {
       console.error(
-        'No joke returned from Supabase',
-        error.message,
+        "No joke returned from Supabase",
+        error?.message,
         content,
         created_at
       );
-      throw new Error('No joke returned from Supabase');
+      throw new Error("No joke returned from Supabase");
     }
 
     return joke as Joke;
   } catch (err) {
     if (err instanceof Error) {
-      console.error('Error inserting joke', err.message);
+      console.error("Error inserting joke", err.message);
     }
-    throw new Error('Error inserting joke');
+    throw new Error("Error inserting joke");
   }
 }
 
-const weekday = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+const weekday = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
 export async function getJokes(fields?: string): Promise<Joke[]> {
   try {
-    const [today] = new Date().toISOString().split('T');
+    const [today] = new Date().toISOString().split("T");
 
     const { data: unmappedJokes } = (await supabase
-      .from('jokes')
-      .select(fields || '*')
-      .neq('created_at', today)
-      .order('created_at', { ascending: false })) as unknown as {
+      .from("jokes")
+      .select(fields || "*")
+      .neq("created_at", today)
+      .order("created_at", { ascending: false })) as unknown as {
       data: Joke[];
     };
 
@@ -165,12 +174,12 @@ export async function getJokes(fields?: string): Promise<Joke[]> {
       const date = new Date(joke.created_at);
 
       const created_at = `${weekday[date.getDay()]} · ${date.toLocaleDateString(
-        'en-US',
+        "en-US",
         {
-          month: 'short',
-          day: 'numeric',
-          year: 'numeric',
-          timeZone: 'UTC',
+          month: "short",
+          day: "numeric",
+          year: "numeric",
+          timeZone: "UTC",
         }
       )}`;
 
@@ -182,12 +191,12 @@ export async function getJokes(fields?: string): Promise<Joke[]> {
 
     return mappedJokes;
   } catch {
-    console.error('Error getting jokes');
+    console.error("Error getting jokes");
     return [
       {
         content: {
-          question: 'Why did the daily dad joke cross the road?',
-          answer: 'Cause it failed to get jokes!',
+          question: "Why did the daily dad joke cross the road?",
+          answer: "Cause it failed to get jokes!",
         },
         created_at: new Date().toISOString(),
       },
@@ -195,22 +204,22 @@ export async function getJokes(fields?: string): Promise<Joke[]> {
   }
 }
 
-export async function checkJokeExists(joke: Joke['content']): Promise<boolean> {
+export async function checkJokeExists(joke: Joke["content"]): Promise<boolean> {
   const { question } = joke;
 
   try {
     const { data: joke } = await supabase
-      .from('jokes')
+      .from("jokes")
       .select()
-      .eq('content->>question', question)
+      .eq("content->>question", question)
       .limit(1)
       .single();
 
-    console.log('Check joke exists result:', joke);
+    console.log("Check joke exists result:", joke);
 
     return !!joke;
   } catch {
-    console.error('Error checking joke exists');
+    console.error("Error checking joke exists");
     return false;
   }
 }
